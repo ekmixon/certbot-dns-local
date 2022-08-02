@@ -46,7 +46,7 @@ class ProcolAgnosticNfqueue(object):
         self.rule_inserted = False
 
     def bind(self, func):
-        for i in range(0, NETFILTER_MAX_QUEUES):
+        for i in range(NETFILTER_MAX_QUEUES):
             try:
                 self.nfqueue.bind(i, func)
                 self.queue_num = i
@@ -102,7 +102,7 @@ class DNSAuthenticator(object):
             return
         question = msg.question[0]
         if str(question.name).lower() != self.validation_name.lower() or question.rdtype != dns.rdatatype.TXT \
-                or question.rdclass != dns.rdataclass.IN:
+                    or question.rdclass != dns.rdataclass.IN:
             return
         reply = dns.message.Message()
         reply.id = msg.id

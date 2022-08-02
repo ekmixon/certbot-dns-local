@@ -14,7 +14,10 @@ install_requires = [
     'dnspython'
 ]
 
-if (platform == 'linux' or platform == 'linux2') and find_library('netfilter_queue') is not None:
+if (
+    platform in ['linux', 'linux2']
+    and find_library('netfilter_queue') is not None
+):
     install_requires += ['NetfilterQueue', 'python-iptables', 'scapy']
 
 with open('README.md', 'r') as fh:

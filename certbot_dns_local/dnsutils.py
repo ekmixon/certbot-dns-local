@@ -12,10 +12,12 @@ def dns_get_all(qname, qtype, nameservers=None, authority=False):
         resolver.nameservers = nameservers
     response = resolver.query(qname, qtype, raise_on_no_answer=False)
     result = []
-    section = response.response.answer if not authority else response.response.authority
+    section = (
+        response.response.authority if authority else response.response.answer
+    )
+
     for answer in section:
-        for value in answer:
-            result.append(str(value))
+        result.extend(str(value) for value in answer)
     return result
 
 
@@ -53,7 +55,7 @@ def dns_challenge_server_ips(domain):
         ns_domain = '.'.join(ns_domain.split('.')[1:])  # Drop the first label
 
     # These IP addresses are then used in order to find the NS record for the _acme-challenge subdomain.
-    chal_ns = dns_get_all('_acme-challenge.' + domain, 'NS', ns_ips, True)
+    chal_ns = dns_get_all(f'_acme-challenge.{domain}', 'NS', ns_ips, True)
 
     # Resolve the IP addresses of the server which is supposed to answer the DNS challenges.
     return dns_resolve_ips(chal_ns)
